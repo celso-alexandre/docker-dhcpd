@@ -1,17 +1,14 @@
+This is a fork of networkboot/dhcpd. Actually, the only difference is that it comes with WEBMIN.
+You can use the WEBMIN_PORT environment variable to define webmin port or leave undeclared to get the default 10000 port.
+To set a root password inside the docker container, use the attach option or the exec console to connect and run `passwd root`.
+As this image requires using the host network to work properly outside the container (there's an example below - How to use [3.]), there is no need to redirect ports with -p parameter.
+
 Docker image for ISC DHCP server
 ================================
-
-[![](https://images.microbadger.com/badges/image/networkboot/dhcpd.svg)](https://microbadger.com/images/networkboot/dhcpd "See more networkboot/dhcpd image details")
 
 This Docker image is suitable for running a DHCP server for your docker host
 network.  It uses ISC DHCP server which is bundled with the latest Ubuntu
 LTS distribution.
-
-How to build
-============
-
- 1. Install Docker with the instructions on <https://www.docker.com>.
- 2. Run `./build` to create the local docker image `networkboot/dhcpd`.
 
 How to use
 ==========
@@ -22,12 +19,14 @@ the DHCP server, start the container with the `--net host` docker run
 option and specify the network interface you want to provide DHCP service
 on.
 
+ 0. Clone this repository and compile this docker image with 
+    `https://github.com/celso-alexandre/docker-dhcpd.git && cd docker-dhcpd && docker build -t dhcpd`.
  1. Create `data` folder.
  2. Create `data/dhcpd.conf` with a subnet clause for the specified
     network interface.  If you need assistance, you can run
-    `docker run -it --rm networkboot/dhcpd man dhcpd.conf` for a description
+    `docker run -it --rm dhcpd man dhcpd.conf` for a description
     of the configuration file syntax.
- 3. Run `docker run -it --rm --init --net host -v "$(pwd)/data":/data networkboot/dhcpd eth0`.
+ 3. Run `docker run -it --rm --init --net host -v "$(pwd)/data":/data dhcpd eth0`.
     `dhcpd` will automatically start and display its logs on the console.
     You can press Ctrl-C to terminate the server.
 

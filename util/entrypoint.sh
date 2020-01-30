@@ -2,6 +2,9 @@
 
 set -e
 
+appStart () {
+	/usr/bin/supervisord
+}
 
 # Support docker run --init parameter which obsoletes the use of dumb-init,
 # but support dumb-init for those that still use it without --init
@@ -69,7 +72,14 @@ if [ -n "$IFACE" ]; then
         echo "You must add the 'docker run' option '--net=host' if you want to provide DHCP service to the host network."
     fi
 
-    $run /usr/sbin/dhcpd -4 -f -d --no-pid -cf "$data_dir/dhcpd.conf" -lf "$data_dir/dhcpd.leases" $IFACE
+    if [ $WEBMIN_PORT ]; then
+        echo "port=$WEBMIN_PORT" >> /etc/webmin/miniserv.conf
+        echo "listen=$WEBMIN_PORT" >> /etc/webmin/miniserv.conf
+    fi
+
+    /usr/bin/perl /usr/share/webmin/miniserv.pl /etc/webmin/miniserv.conf
+    /usr/sbin/dhcpd -4 -f -d --no-pid -cf "$data_dir/dhcpd.conf" -lf "$data_dir/dhcpd.leases" $IFACE
+
 else
     # Run another binary
     $run "$@"
