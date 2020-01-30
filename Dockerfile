@@ -17,9 +17,6 @@ RUN apt-get -q -y update \
 RUN apt-get update
 RUN apt-get install -y nano
 
-# Install supervisor, to run webmin in background
-RUN apt-get install -y supervisor
-
 # apt-show-versions bug fix: https://groups.google.com/forum/#!topic/beagleboard/jXb9KhoMOsk
 RUN rm -f /etc/apt/apt.conf.d/docker-gzip-indexes
 RUN apt-get purge -y apt-show-versions

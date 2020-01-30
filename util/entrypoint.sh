@@ -77,6 +77,11 @@ if [ -n "$IFACE" ]; then
         echo "listen=$WEBMIN_PORT" >> /etc/webmin/miniserv.conf
     fi
 
+    # Workaround to make webmin automatically find the correct dhcp config file
+    rm -f /etc/dhcp/dhcpd.conf
+    ln -s "$data_dir/dhcpd.conf" /etc/dhcp/dhcpd.conf
+
+    # Start both services (webmin first, and then hangs on dhcpd) 
     /usr/bin/perl /usr/share/webmin/miniserv.pl /etc/webmin/miniserv.conf
     /usr/sbin/dhcpd -4 -f -d --no-pid -cf "$data_dir/dhcpd.conf" -lf "$data_dir/dhcpd.leases" $IFACE
 
